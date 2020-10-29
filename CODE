@@ -1,0 +1,48 @@
+package com.example.sqliteproject;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        try{
+            // Database oluşturalım. (this ile main activity'e referans verelim)
+            SQLiteDatabase database = this.openOrCreateDatabase("Musicians", MODE_PRIVATE,null); // database mevcutsa aç yoksa oluştur.
+            // musicians veritabanını oluşturdum ve bana ozel private mode olarak oluşturdum.
+
+            database.execSQL("CREATE TABLE IF NOT EXISTS musicians1 (name VARCHAR, age INTEGER)"); // tablo oluşturdum ve SQL kodu yazdım içeri
+            // Musicians lara isim ve yaş tanımladım.
+            database.execSQL("INSERT INTO musicians1 (name, age) VALUES ('BERK',23)"); // TABLOYA DEGER EKLEDIM
+            database.execSQL("INSERT INTO musicians1 (name, age) VALUES ('KAREN',24)");
+            Cursor cursor = database.rawQuery("SELECT * FROM musicians1",null); // musicians1 içindeki herşeyi çek.
+            // bu cursor'a hangi sütunlara gidecegini söyleyelim şimdi de.
+            int nameIndex = cursor.getColumnIndex("name");
+            int ageIndex = cursor.getColumnIndex("age");
+
+            while(cursor.moveToNext()){  // cursor gidebildigi yere kadar gitsin tek tek.
+                System.out.println("Name: " + cursor.getString(nameIndex));
+                System.out.println("Age : " + cursor.getString(ageIndex));
+
+            }
+
+            cursor.close();
+
+
+
+        }
+
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+    }
+}
